@@ -26,10 +26,9 @@ ${api.description!}
 ## Dubbo接口声明
 
 ```java
-package cn.gov.zcy.paas.trade.quote.facade;
+package   ${api.package!};
 
 public interface ${serviceName!} {
-
     ${api.methodCode!}
   }
 
@@ -58,6 +57,7 @@ public interface ${serviceName!} {
 
   ## 返回结果
   ### 返回结果示例
+
   ```json
     <#if api.outParametersJson??>
       ${api.outParametersJson}
@@ -67,6 +67,7 @@ public interface ${serviceName!} {
   ```
 
   ### 返回结果说明
+
     <#if api.outParameter??>
       <@resParamTableMacro param=api.outParameter />
     <#else>

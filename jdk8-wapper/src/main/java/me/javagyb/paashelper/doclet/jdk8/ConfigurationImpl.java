@@ -205,6 +205,14 @@ public class ConfigurationImpl extends AbstractConfiguration {
 		}
 	}
 
+
+	public static AbstractConfiguration getInstance() {
+		if(instance==null){
+			instance = new ConfigurationImpl();
+		}
+		return instance;
+	}
+
 	/**
 	 * {@inheritDoc}
 	 */

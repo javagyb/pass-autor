@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.Collator;
@@ -18,6 +19,7 @@ import java.util.Map;
 import java.util.Set;
 
 
+import net.winroad.wrdoclet.AbstractConfiguration;
 import net.winroad.wrdoclet.AbstractDoclet;
 import net.winroad.wrdoclet.data.OpenAPI;
 import net.winroad.wrdoclet.data.RequestMapping;
@@ -47,6 +49,9 @@ import com.sun.tools.doclets.internal.toolkit.builders.AbstractBuilder;
 import com.sun.tools.doclets.internal.toolkit.util.ClassTree;
 import com.sun.tools.doclets.internal.toolkit.util.DocletAbortException;
 
+import org.apache.maven.model.Model;
+import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
+import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.pegdown.PegDownProcessor;
 import org.springframework.util.CollectionUtils;
 
@@ -55,6 +60,11 @@ import org.springframework.util.CollectionUtils;
  * 
  */
 public class HtmlDoclet extends AbstractDoclet {
+
+
+	static {
+		MavenXpp3Reader mavenXpp3Reader = new MavenXpp3Reader();
+	}
 
 	public HtmlDoclet() {
 		configurationEx = (ConfigurationImpl) configuration();
@@ -115,6 +125,7 @@ public class HtmlDoclet extends AbstractDoclet {
 			}else {
 				doc.setDetailApis(taggedOpenAPIs.get(tag));
 			}
+
 			for (OpenAPI openAPI : taggedOpenAPIs.get(tag)) {
 				API api = new API();
 				api.setUrl(openAPI.getRequestMapping().getUrl());
@@ -352,7 +363,8 @@ public class HtmlDoclet extends AbstractDoclet {
 	}
 
 	public static int optionLength(String option) {
-		return (ConfigurationImpl.getInstance()).optionLength(option);
+		AbstractConfiguration instance = ConfigurationImpl.getInstance();
+		return instance.optionLength(option);
 	}
 
 	public static void main(String[] args) {

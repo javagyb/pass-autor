@@ -3,6 +3,8 @@ package net.winroad.wrdoclet.builder;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.javadoc.Type;
+
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 
@@ -22,6 +24,9 @@ import net.winroad.wrdoclet.data.WRDoc;
 import net.winroad.wrdoclet.utils.LoggerFactory;
 import net.winroad.wrdoclet.utils.UniversalNamespaceCache;
 
+import org.apache.maven.model.Model;
+import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
+import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.springframework.util.StringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -37,6 +42,10 @@ import com.sun.tools.doclets.internal.toolkit.Configuration;
 import org.xml.sax.SAXException;
 
 public class DubboDocBuilder extends AbstractServiceDocBuilder {
+
+
+
+
 	protected LinkedList<String> dubboInterfaces = null;
 	protected HashMap<String, String> protocolMap;
 

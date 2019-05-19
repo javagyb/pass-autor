@@ -65,7 +65,6 @@ public class ConfigurationImpl extends AbstractConfiguration {
 
 	/**
 	 * Constructor. Initialises resource for the
-	 * {@link com.sun.tools.doclets.MessageRetriever}.
 	 */
 	private ConfigurationImpl() {
 		standardmessage = new MessageRetriever(this,
@@ -203,6 +202,14 @@ public class ConfigurationImpl extends AbstractConfiguration {
 		} else {
 			return 0;
 		}
+	}
+
+
+	public static AbstractConfiguration getInstance() {
+		if (instance==null){
+			instance = new ConfigurationImpl();
+		}
+		return instance;
 	}
 
 	/**

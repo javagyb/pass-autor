@@ -32,6 +32,7 @@ public class OpenAPI {
 	private String remark;
 	private Set<String> tags = new HashSet<String>();
 	private boolean deprecated = false;
+	private String packageName;
 	private String inParametersDemos;
 	private String outParametersDemos;
 
@@ -43,12 +44,21 @@ public class OpenAPI {
 //		}
 //	}
 
+
+	public String getPackage(){
+        System.out.println(getQualifiedName());
+		int indexOf = getQualifiedName().lastIndexOf(".");
+        int indexOf1 = getQualifiedName().substring(0, indexOf).lastIndexOf(".");
+        return getQualifiedName().substring(0,indexOf1);
+	}
+
 	public String getSimpleName(){
 		String[] split = getQualifiedName().split("\\.");
 		String interfaceName = split[split.length-2];
 		String methodName = split[split.length-1];
 		return interfaceName+"."+methodName;
 	}
+
 	public String getMethodCode(){
 		String responseName = "void";
 		if(getOutParameter()!=null){
@@ -160,11 +170,6 @@ public class OpenAPI {
 		return values;
 	}
 
-	public static void main(String[] args) {
-		String sss= "com.org.Res<ccc.sss.BBB,ccc.sss.DDD>";
-		System.out.println(sss.contains("<"));
-
-	}
 
 	private String  getSimpleType(String type){
 		String[] strings = StringUtils.split(type, "\\.");
