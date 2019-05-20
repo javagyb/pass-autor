@@ -8,9 +8,12 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+import com.github.jsonzou.jmockdata.JMockData;
+import com.github.jsonzou.jmockdata.MockConfig;
 import com.sun.javadoc.Tag;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.util.ClassUtils;
 import org.springframework.util.CollectionUtils;
 
 @Data
@@ -112,11 +115,16 @@ public class OpenAPI {
 		if(inParameters.isEmpty()){
 			return "";
 		}
-		Map<String,Object> values = new LinkedHashMap<>();
+		List<Object> values = new ArrayList<>();
+//		Map<String,Object> values = new LinkedHashMap<>();
 		for (APIParameter x: inParameters){
 			Map<String, Object> mapValue = getMapValue(x);
 			if(!CollectionUtils.isEmpty(mapValue)){
-				values.putAll(mapValue);
+				if(mapValue.size()==1){
+					values.add(mapValue.values().iterator().next());
+				}else {
+					values.add(mapValue);
+				}
 			}
 		}
 		try {
@@ -137,17 +145,61 @@ public class OpenAPI {
 			return temp;
 		}
 		Map<String,Object> values = new LinkedHashMap<>();
+		String type = apiParameter.getType();
 		if(CollectionUtils.isEmpty(apiParameter.getFields())){
-			String value  = apiParameter.getDescription();
+			Class<?> typeClass =null;
+			try {
+				typeClass = ClassUtils.forName(type,getClass().getClassLoader());
+			} catch (ClassNotFoundException e) {
+			}
+			Object value  = null;
+			MockConfig mockConfig = new MockConfig();
+			mockConfig.longRange(10000_0000_0000L,20000_0000_0000L);
+			mockConfig.intRange(0,200);
+			value = apiParameter.getDescription();
+			if(typeClass!=null && !String.class.isAssignableFrom(typeClass)){
+				value  = JMockData.mock(typeClass,mockConfig);
+			}
+
 			if(!"N/A".equalsIgnoreCase(apiParameter.getValueRange())){
 				value = apiParameter.getValueRange();
+
 			}
+
+
 			if(apiParameter.getExample()!=null && !"".equalsIgnoreCase(apiParameter.getExample().getValue())){
 				value = apiParameter.getExample().getValue();
 			}
-			values.put(apiParameter.getName(),value);
+
+			if(Objects.equals("从0开始",value)){
+				value  = JMockData.mock(typeClass,mockConfig);
+			}
+
+			if(typeClass!=null && value!=null){
+				if(Integer.class.isAssignableFrom(typeClass)){
+					values.put(apiParameter.getName(),Integer.valueOf(String.valueOf(value)));
+				}
+				if(Float.class.isAssignableFrom(typeClass)){
+					values.put(apiParameter.getName(),Float.valueOf(String.valueOf(value)));
+				}
+				if(Double.class.isAssignableFrom(typeClass)){
+					values.put(apiParameter.getName(),Double.valueOf(String.valueOf(value)));
+				}
+				if(Long.class.isAssignableFrom(typeClass)){
+					values.put(apiParameter.getName(),Long.valueOf(String.valueOf(value)));
+				}
+				if(String.class.isAssignableFrom(typeClass)){
+					values.put(apiParameter.getName(),String.valueOf(value));
+				}
+				if(Boolean.class.isAssignableFrom(typeClass)){
+					values.put(apiParameter.getName(),value);
+				}
+			}else {
+				values.put(apiParameter.getName(),value);
+			}
+
 		}else {
-			if(StringUtils.startsWithIgnoreCase(apiParameter.getType(),"java.util.List")||StringUtils.startsWithIgnoreCase(apiParameter.getType(),"java.util.Set")){
+			if(StringUtils.startsWithIgnoreCase(type,"java.util.List")||StringUtils.startsWithIgnoreCase(type,"java.util.Set")){
 				List<Object> objects = new ArrayList<>();
 				if(!CollectionUtils.isEmpty(apiParameter.getFields())&& apiParameter.getFields().get(0)!=null && !CollectionUtils.isEmpty( apiParameter.getFields().get(0).getFields())){
 					Map<String,Object> temp = new LinkedHashMap<>();
