@@ -31,6 +31,7 @@ import net.winroad.wrdoclet.utils.LoggerFactory;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.springframework.util.CollectionUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
@@ -168,6 +169,7 @@ public abstract class AbstractDocBuilder {
 	}
 
 	protected String getBriefFromCommentText(String commentText) {
+		commentText = org.apache.commons.lang3.StringUtils.replace(commentText,"<pre>","");
 		int index = StringUtils.indexOf(commentText, '\n');
 		if (index != -1) {
 			commentText = StringUtils.substring(commentText, 0, index);

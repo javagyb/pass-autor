@@ -195,11 +195,12 @@ public class HtmlDoclet extends AbstractDoclet {
 			tagMap.put("serviceName",k);
 			v.forEach(api->{
 				tagMap.put("api",api);
+				String fileName = org.apache.commons.lang3.StringUtils.isNotEmpty(api.getBrief()) ? api.getBrief() : api.getSimpleName();
 				this.configurationEx
 						.getWriterFactory()
 						.getFreemarkerWriter()
 						.generateHtmlFile("wrNoFrame_md.ftl", tagMap,
-								this.configurationEx.destDirName, api.getSimpleName()+".md");
+								this.configurationEx.destDirName,fileName+".md" );
 			});
 		});
 		this.generateCommonFiles(root);
